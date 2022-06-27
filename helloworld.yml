@@ -28,8 +28,8 @@
   - name: add pyenv to path
     shell:
       cmd: |
-        export PATH="/tmp/pyenv/.pyenv/bin:$PATH"
+        export PATH="/tmp/pyenv/bin:$PATH"
   - name: see versions
     shell:
       cmd: |
-        pyenv versions
+        /tmp/pyenv/.pyenvrc versions
