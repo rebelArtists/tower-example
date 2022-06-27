@@ -21,10 +21,6 @@
         do
           echo "$entry"
         done
-  - name: see all
-    shell:
-      cmd: |
-        ls -a /var/lib/awx/pyenv/
   - name: add pyenv to path
     shell:
       cmd: |
