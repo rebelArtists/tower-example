@@ -21,10 +21,14 @@
         do
           echo "$entry"
         done
+  - name: see all
+    shell:
+      cmd: |
+        ls -a /tmp/pyenv/
   - name: add pyenv to path
     shell:
       cmd: |
-        export PATH="/tmp/pyenv//bin:$PATH"
+        export PATH="/tmp/pyenv/.pyenv/bin:$PATH"
   - name: see versions
     shell:
       cmd: |
