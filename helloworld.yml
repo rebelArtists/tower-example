@@ -24,7 +24,7 @@
         unset PYTHONPATH
         pip install --user boto3 botocore
 
-  - name: stand up ec2 ndoe
+  - name: stand up ec2 node
     ec2_instance:
       name: "test-instance"
       key_name: "ansiblePair"
