@@ -4,7 +4,7 @@
   hosts: localhost
   roles:
      - role: staticdev.pyenv
-       pyenv_path: "{{ home }}/pyenv"
+       pyenv_path: "/tmp/pyenv"
        pyenv_owner: "root"
        pyenv_global:
          - 3.6.4
