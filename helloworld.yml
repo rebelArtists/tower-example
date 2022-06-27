@@ -1,7 +1,9 @@
 ---
 # Install the latest Python 3 version
-- name: install python on ansible host
+- name: install python and aws dependencies on ansible host
   hosts: localhost
-  roles:
-    - name: python3
-      python3_pyenv: "3.8.5"
+  tasks:
+  - name: install python
+    shell: pyenv install 3.6.4
+  - name: check available versions
+    shell: pyenv versions
