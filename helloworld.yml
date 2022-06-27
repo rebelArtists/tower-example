@@ -4,7 +4,7 @@
   hosts: localhost
   roles:
      - role: staticdev.pyenv
-       pyenv_path: "/tmp/pyenv"
+       pyenv_path: "/tmp"
        pyenv_owner: "root"
        pyenv_global:
          - 3.6.4
@@ -13,9 +13,7 @@
          - 3.6.4
 
   tasks:
-  - name: add pyenv to path
-    shell: export PATH="/tmp/pyenv/.pyenv/bin:$PATH"
   - name: check available versions
-    shell: which pyenv
+    shell: which /tmp/pyenv/.pyenv
   - name: install python
-    shell: pyenv install 3.6.4
+    shell: /tmp/pyenv/.pyenv install 3.6.4
