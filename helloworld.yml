@@ -24,8 +24,7 @@
         unset PYTHONPATH
         pip install --user boto3 botocore
 
-  - name: start an ec2 instance
-    amazon.aws.ec2_instance:
+  - amazon.aws.ec2_instance:
       name: "test-instance"
       key_name: "ansiblePair"
       vpc_subnet_id: subnet-0d554bcace17db73d
