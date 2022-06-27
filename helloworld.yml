@@ -13,6 +13,12 @@
          - 3.6.4
 
   tasks:
+  - name: Install required system packages
+    apt:
+      pkg:
+        - python3-pip
+      state: latest
+      update_cache: true
   - name: see versions
     shell:
       cmd: |
@@ -21,7 +27,4 @@
         . /tmp/pyenv/.pyenvrc && pyenv versions
         . /tmp/pyenv/.pyenvrc && pyenv global 3.6.4
         python -V
-  - name: check python version
-    shell:
-      cmd: |
-        python -V
+        pip3 install --user boto3 botocore
