@@ -24,7 +24,7 @@
   - name: see all
     shell:
       cmd: |
-        ls -a /tmp/pyenv/
+        ls -a /var/lib/awx/pyenv/
   - name: add pyenv to path
     shell:
       cmd: |
@@ -32,4 +32,4 @@
   - name: see versions
     shell:
       cmd: |
-        . {{ pyenv_path }}/.pyenvrc && pyenv versions
+        . /tmp/pyenv/.pyenvrc && pyenv versions
