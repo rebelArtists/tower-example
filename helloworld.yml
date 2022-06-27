@@ -32,4 +32,4 @@
   - name: see versions
     shell:
       cmd: |
-        /tmp/pyenv/.pyenvrc versions
+        sudo /tmp/pyenv/.pyenvrc versions
