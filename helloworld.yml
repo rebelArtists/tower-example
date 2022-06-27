@@ -13,7 +13,7 @@
          - 3.6.4
 
   tasks:
-  - name: check available versions
+  - name: see pyenv install files
     shell:
       cmd: |
         search_dir=/tmp/pyenv/
@@ -21,3 +21,11 @@
         do
           echo "$entry"
         done
+  - name: add pyenv to path
+    shell:
+      cmd: |
+        export PATH="/tmp/pyenv//bin:$PATH"
+  - name: see versions
+    shell:
+      cmd: |
+        pyenv versions
