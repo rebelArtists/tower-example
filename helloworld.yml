@@ -5,7 +5,7 @@
   roles:
      - role: staticdev.pyenv
        pyenv_path: "{{ home }}/pyenv"
-       pyenv_owner: "{{ ansible_env.USER }}"
+       pyenv_owner: "dan"
        pyenv_global:
          - 3.6.4
        pyenv_enable_autocompletion: false
