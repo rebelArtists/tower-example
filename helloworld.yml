@@ -11,7 +11,6 @@
        pyenv_enable_autocompletion: false
        pyenv_python_versions:
          - 3.6.4
-
   tasks:
   - name: see versions
     shell:
@@ -22,3 +21,15 @@
         . /tmp/pyenv/.pyenvrc && pyenv global 3.6.4
         unset PYTHONPATH
         pip install --user boto3 botocore
+  - name: start an ec2 instance
+    amazon.aws.ec2_instance:
+      name: "test-instance"
+      key_name: "ansiblePair"
+      vpc_subnet_id: subnet-0d554bcace17db73d
+      instance_type: t2.medium
+      security_group: default
+      network:
+        assign_public_ip: true
+      image_id: ami-0b9ecb12083282d75
+      tags:
+        Environment: Testing
