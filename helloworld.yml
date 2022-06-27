@@ -18,7 +18,7 @@
       cmd: |
         . /tmp/pyenv/.pyenvrc && pyenv versions
         . /tmp/pyenv/.pyenvrc && pyenv global 3.6.4
-        . /tmp/pyenv/.pyenvrc && eval "$(pyenv init -)"
+        . /tmp/pyenv/.pyenvrc && eval "$(pyenv init --path)"
   - name: check python version
     shell:
       cmd: |
