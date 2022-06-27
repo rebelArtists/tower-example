@@ -13,12 +13,6 @@
          - 3.6.4
 
   tasks:
-  - name: Install required system packages
-    apt:
-      pkg:
-        - python3-pip
-      state: latest
-      update_cache: true
   - name: see versions
     shell:
       cmd: |
