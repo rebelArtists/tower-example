@@ -1,10 +1,31 @@
 ---
-- name: Hello World!
-  hosts: all
-
+- name: install local packages before launching instances
+  hosts: localhost
   tasks:
+  - name: Install python
+    gather_facts: no
+    roles:
+      - role: python-latest
+        python_version: 3.6
+  - name: Install boto3 and botocore with pip3 module
+      pip:
+        name:
+        - boto3
+        - botocore
+        executable: pip-3.6
 
-  - name: Hello World!
-    shell: echo "Hi! Tower is working."
-  - name: NEW WEBHOOK TASK!!!
-    shell: echo "webhooks are working!!!"
+# - name: launch ec2 instance
+#   hosts: all
+#   tasks:
+#   - name: start an instance with a public IP address
+#     amazon.aws.ec2_instance:
+#       name: "ansible_box_tests"
+#       key_name: "ansibleKey"
+#       vpc_subnet_id: subnet-5ca1ab1e
+#       instance_type: c5.large
+#       security_group: default
+#       network:
+#         assign_public_ip: true
+#       image_id: ami-123456
+#       tags:
+#         Environment: Testing
