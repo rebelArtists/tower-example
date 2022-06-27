@@ -2,6 +2,8 @@
 # Install the latest Python 3 version
 - name: install python and aws dependencies on ansible host
   hosts: localhost
+  collections:
+    - amazon.aws
   roles:
      - role: staticdev.pyenv
        pyenv_path: "/tmp/pyenv"
