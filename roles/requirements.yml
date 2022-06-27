@@ -1,3 +1,4 @@
 # from galaxy
-- src: yatesr.timezone
-
+# Install a role from GitHub
+- name: python3
+  src: https://github.com/mdklatt/ansible-python3-role
