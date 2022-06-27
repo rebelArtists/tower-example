@@ -14,7 +14,7 @@
 
   tasks:
   - name: add pyenv to path
-    shell: export PATH="/tmp/pyenv:$PATH"
+    shell: export PATH="/tmp/pyenv/.pyenv/bin:$PATH"
   - name: check available versions
     shell: which pyenv
   - name: install python
