@@ -17,7 +17,8 @@
     shell:
       cmd: |
         . /tmp/pyenv/.pyenvrc && pyenv versions
+        . /tmp/pyenv/.pyenvrc && pyenv global 3.6.4
   - name: check python version
     shell:
       cmd: |
-        python -V
+        python3 -V
