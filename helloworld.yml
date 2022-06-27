@@ -14,9 +14,10 @@
 
   tasks:
   - name: check available versions
-    shell: |
-    search_dir=`/tmp/pyenv/`
-    for entry in "$search_dir"/*
-    do
-      echo "$entry"
-    done
+    shell:
+      cmd: |
+        search_dir=/tmp/pyenv/
+        for entry in "$search_dir"/*
+        do
+          echo "$entry"
+        done
