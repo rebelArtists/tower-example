@@ -1,7 +1,6 @@
 # from galaxy
 # Install a role from GitHub
 ---
-roles:
 - name: python3
   src: https://github.com/mdklatt/ansible-python3-role
 - name: pyenvRole
