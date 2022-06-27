@@ -1,0 +1,5 @@
+# from galaxy
+# Install a role from GitHub
+---
+collections:
+  - name: amazon.aws
