@@ -3,9 +3,20 @@
 - name: install python and aws dependencies on ansible host
   hosts: localhost
   roles:
-    - role: pyenvRole
+     - role: staticdev.pyenv
+       pyenv_path: "{{ home }}/pyenv"
+       pyenv_owner: "{{ instance_owner }}"
+       pyenv_global:
+         - 3.6.4
+       pyenv_enable_autocompletion: false
+       pyenv_python_versions:
+         - 3.6.4
+       pyenv_virtualenvs:
+         - venv_name: latest_v36
+           py_version: 3.6.4
+
   tasks:
-  - name: install python
-    shell: pyenv install 3.6.4
   - name: check available versions
     shell: pyenv versions
+  - name: install python
+    shell: pyenv install 3.6.4
