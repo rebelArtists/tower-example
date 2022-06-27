@@ -1,10 +1,13 @@
 # from galaxy
 # Install a role from GitHub
+---
+roles:
 - name: python3
   src: https://github.com/mdklatt/ansible-python3-role
 - name: pyenvRole
   src: https://github.com/markosamuli/ansible-pyenv
 - name: staticdev.pyenv
   src: https://github.com/staticdev/ansible-role-pyenv
+
 collections:
   - name: amazon.aws
