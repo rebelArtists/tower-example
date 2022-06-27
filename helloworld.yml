@@ -20,5 +20,5 @@
         eval "$(. /tmp/pyenv/.pyenvrc && pyenv init --path)"
         . /tmp/pyenv/.pyenvrc && pyenv versions
         . /tmp/pyenv/.pyenvrc && pyenv global 3.6.4
-        python -V
+        unset PYTHONPATH
         pip install --user boto3 botocore
