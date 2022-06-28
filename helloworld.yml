@@ -51,10 +51,6 @@
       timeout: 320
     loop: "{{ ec2.instances }}"
 
-  # - name: Terminate instances
-  #   ec2_instance:
-  #     state: absent
-  #     instance_ids: '{{ ec2.instance_ids }}'
 
 - name: Configure instance(s)
   hosts: launched
@@ -63,7 +59,7 @@
   vars:
     create_containers: 1
     default_container_name: bor
-    default_container_image: 643875348040.dkr.ecr.us-east-2.amazonaws.com/awx_images:awx_memcached
+    default_container_image: 0xpolygon/bor:0.3.0-beta3
   tasks:
     - name: Install aptitude
       apt:
