@@ -36,7 +36,7 @@
       image_id: ami-0b9ecb12083282d75
       tags:
         Environment: Testing
-      register: ec2
+    register: ec2
 
   - name: Terminate instances
     ec2_instance:
