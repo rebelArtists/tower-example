@@ -36,3 +36,10 @@
       image_id: ami-0b9ecb12083282d75
       tags:
         Environment: Testing
+
+  - name: Terminate instances
+    ec2_instance:
+      name: "test-instance"
+      state: absent
+      filters:
+        instance-state-name: running
