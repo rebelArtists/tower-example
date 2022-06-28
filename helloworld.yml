@@ -30,7 +30,7 @@
       key_name: "ansiblePair"
       vpc_subnet_id: subnet-0d554bcace17db73d
       instance_type: t2.medium
-      security_group: sg-00213f8911bebc0d4
+      security_group: awx-networking
       network:
         assign_public_ip: true
       image_id: ami-0b9ecb12083282d75
