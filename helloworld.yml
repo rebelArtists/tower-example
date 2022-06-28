@@ -40,7 +40,7 @@
 
   - name: Add new instance to host group
     add_host:
-      hostname: "{{ item.public_ip }}"
+      hostname: "{{ item.public_ip_address }}"
       groupname: launched
     loop: "{{ ec2.instances }}"
 
