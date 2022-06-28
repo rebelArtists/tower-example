@@ -27,7 +27,7 @@
   - name: stand up ec2 node
     ec2_instance:
       name: "test-instance"
-      key_name: "ansiblePair"
+      key_name: "towerTest"
       vpc_subnet_id: subnet-0d554bcace17db73d
       instance_type: t2.medium
       security_group: awx-networking
