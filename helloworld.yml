@@ -1,5 +1,5 @@
 ---
-# Install the latest Python 3 version
+# ansible host dependencies and create new architecture
 - name: install python and aws dependencies on ansible host
   hosts: localhost
   collections:
@@ -38,7 +38,83 @@
         Environment: Testing
     register: ec2
 
-  - name: Terminate instances
-    ec2_instance:
-      state: absent
-      instance_ids: '{{ ec2.instance_ids }}'
+  - name: Add new instance to host group
+    add_host:
+      hostname: "{{ item.public_ip }}"
+      groupname: launched
+    loop: "{{ ec2.instances }}"
+
+  - name: Wait for SSH to come up
+    delegate_to: "{{ item.public_dns_name }}"
+    wait_for_connection:
+      delay: 60
+      timeout: 320
+    loop: "{{ ec2.instances }}"
+
+  # - name: Terminate instances
+  #   ec2_instance:
+  #     state: absent
+  #     instance_ids: '{{ ec2.instance_ids }}'
+
+- name: Configure instance(s)
+  hosts: launched
+  become: True
+  gather_facts: True
+  vars:
+    create_containers: 1
+    default_container_name: bor
+    default_container_image: 643875348040.dkr.ecr.us-east-2.amazonaws.com/awx_images:awx_memcached
+  tasks:
+    - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+          - awscli
+        state: latest
+        update_cache: true
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+    - name: Login ECR
+      shell: "{{ item }}"
+      environment:
+        AWS_ACCESS_KEY_ID: "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
+        AWS_SECRET_ACCESS_KEY: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
+        AWS_REGION: us-east-2
+      with_items:
+       - $(aws ecr get-login --no-include-email --region us-east-2)
+    - name: Pull default docker image
+      docker_image:
+        name: "{{ default_container_image }}"
+        source: pull
+    - name: Create and run container
+      docker_container:
+        name: "{{ default_container_name }}{{ item }}"
+        image: "{{ default_container_image }}"
+        state: started
+        ports: "8080:80"
+      with_sequence: count={{ create_containers }}
