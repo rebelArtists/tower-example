@@ -117,12 +117,12 @@
         command: server
       with_sequence: count={{ create_containers }}
 
-- name: teardown instances
-  hosts: localhost
-  collections:
-  - amazon.aws
-  tasks:
-  - name: Terminate instances
-    ec2_instance:
-      state: absent
-      instance_ids: '{{ ec2.instance_ids }}'
+# - name: teardown instances
+#   hosts: localhost
+#   collections:
+#   - amazon.aws
+#   tasks:
+#   - name: Terminate instances
+#     ec2_instance:
+#       state: absent
+#       instance_ids: '{{ ec2.instance_ids }}'
