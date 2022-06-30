@@ -2,6 +2,8 @@
 # ansible host dependencies and create new architecture
 - name: install python and aws dependencies on ansible host
   hosts: localhost
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
   collections:
   - amazon.aws
   roles:
@@ -23,7 +25,7 @@
         . /tmp/pyenv/.pyenvrc && pyenv global 3.6.4
         unset PYTHONPATH
         pip install --user boto3 botocore
-        
+
   - name: Install git
     apt:
       name: git
