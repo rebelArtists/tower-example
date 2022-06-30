@@ -66,6 +66,12 @@
         echo $(terraform output -raw ansible_inventory)
         export REMOTE_HOSTS=$(terraform output -raw ansible_inventory)
 
+  - name: register new hosts
+    shell:
+      cmd: |
+        echo $(terraform output -raw ansible_inventory)
+    register: new_hosts
+
   # - name: stand up ec2 node
   #   ec2_instance:
   #     name: "test-instance"
@@ -84,7 +90,7 @@
     add_host:
       hostname: "{{ item }}"
       groupname: launched
-    loop: "{{ lookup("env", "REMOTE_HOSTS") }}"
+    loop: "{{ new_hosts }}"
 
   - name: Wait for SSH to come up
     delegate_to: "{{ item.public_dns_name }}"
