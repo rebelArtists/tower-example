@@ -24,6 +24,22 @@
         unset PYTHONPATH
         pip install --user boto3 botocore
 
+  # Clones the private repository in the private_clone folder inside the *opt* directory.
+  - name: Clone PRIVATE repo
+    ansible.builtin.git:
+      repo: https://'{{ lookup("env", "PAT_TOKEN") }}'@github.com/maticnetwork/terraform-multicloud-resources.git
+      dest: /opt/tf_modules
+      clone: yes
+      # #    accept_hostkey: no
+      # key_file: /home/ubuntu/.ssh/id_rsa
+      version: main
+
+  - command: "ls /opt/tf_modules"
+    register: dir_out
+
+  - debug: var={{item}}
+    with_items: dir_out.stdout_lines
+
   - name: stand up ec2 node
     ec2_instance:
       name: "test-instance"
