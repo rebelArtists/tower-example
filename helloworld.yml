@@ -24,13 +24,10 @@
         unset PYTHONPATH
         pip install --user boto3 botocore
         mkdir -p /opt/tf_repo
-        echo $PATH
-        cat /etc/os-release
         sudo yum install -y yum-utils
         sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
         sudo yum -y install terraform
-        echo {{ lookup("env", "TF_TOKEN") }}
-        export TF_TOKEN_app_terraform_io={{ lookup("env", "TF_TOKEN") }}
+
 
   - name: create tf cloud config file with content
     copy:
@@ -39,11 +36,6 @@
         credentials "app.terraform.io" {
           token = "{{ lookup("env", "TF_TOKEN") }}"
         }
-
-  - name: review file written
-    shell:
-      cmd: |
-        cat /var/lib/awx/.terraform.d/credentials.tfrc.json
 
   - name: update safe directory
     command: git config --global --add safe.directory /opt/tf_repo
@@ -67,14 +59,12 @@
   - name: init terraform and run plan
     shell:
       cmd: |
-        pwd
         cd /opt/tf_repo/aws/test-applications/us-east-2/ci_deployment_cluster
         terraform init
         terraform plan -var 'instance_count={{ instance_count }}'
         terraform apply -var 'instance_count={{ instance_count }}' -auto-approve
         echo $(terraform output -raw ansible_inventory)
-        sleep 3m
-        terraform destroy -var 'instance_count={{ instance_count }}' -auto-approve
+        export REMOTE_HOSTS=$(terraform output -raw ansible_inventory)
 
   # - name: stand up ec2 node
   #   ec2_instance:
@@ -89,92 +79,92 @@
   #     tags:
   #       Environment: Testing
   #   register: ec2
-  #
-  # - name: Add new instance to host group
-  #   add_host:
-  #     hostname: "{{ item.public_ip_address }}"
-  #     groupname: launched
-  #   loop: "{{ ec2.instances }}"
-  #
-  # - name: Wait for SSH to come up
-  #   delegate_to: "{{ item.public_dns_name }}"
-  #   wait_for_connection:
-  #     delay: 60
-  #     timeout: 320
-  #   loop: "{{ ec2.instances }}"
 
-#
-# - name: Configure instance(s)
-#   hosts: launched
-#   become: yes
-#   gather_facts: True
-#   vars:
-#     create_containers: 1
-#     default_container_name: bor
-#     default_container_image: 0xpolygon/bor:0.3.0-beta3
-#   tasks:
-#     - name: Install aptitude
-#       apt:
-#         name: aptitude
-#         state: latest
-#         update_cache: true
-#     - name: Install required system packages
-#       apt:
-#         pkg:
-#           - apt-transport-https
-#           - ca-certificates
-#           - curl
-#           - software-properties-common
-#           - python3-pip
-#           - virtualenv
-#           - python3-setuptools
-#           - awscli
-#         state: latest
-#         update_cache: true
-#     - name: Add Docker GPG apt Key
-#       apt_key:
-#         url: https://download.docker.com/linux/ubuntu/gpg
-#         state: present
-#     - name: Add Docker Repository
-#       apt_repository:
-#         repo: deb https://download.docker.com/linux/ubuntu focal stable
-#         state: present
-#     - name: Update apt and install docker-ce
-#       apt:
-#         name: docker-ce
-#         state: latest
-#         update_cache: true
-#     - name: Install Docker Module for Python
-#       pip:
-#         name: docker
-#     - name: Login ECR
-#       shell: "{{ item }}"
-#       environment:
-#         AWS_ACCESS_KEY_ID: "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
-#         AWS_SECRET_ACCESS_KEY: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
-#         AWS_REGION: us-east-2
-#       with_items:
-#        - $(aws ecr get-login --no-include-email --region us-east-2)
-#     - name: Pull default docker image
-#       docker_image:
-#         name: "{{ default_container_image }}"
-#         source: pull
-#     - name: Create and run container
-#       docker_container:
-#         name: "{{ default_container_name }}{{ item }}"
-#         image: "{{ default_container_image }}"
-#         state: started
-#         ports: "8080:80"
-#         detach: yes
-#         command: server
-#       with_sequence: count={{ create_containers }}
+  - name: Add new instance to host group
+    add_host:
+      hostname: "{{ item }}"
+      groupname: launched
+    loop: "{{ lookup("env", "REMOTE_HOSTS") }}"
 
-# - name: teardown instances
-#   hosts: localhost
-#   collections:
-#   - amazon.aws
-#   tasks:
-#   - name: Terminate instances
-#     ec2_instance:
-#       state: absent
-#       instance_ids: '{{ ec2.instance_ids }}'
+  - name: Wait for SSH to come up
+    delegate_to: "{{ item.public_dns_name }}"
+    wait_for_connection:
+      delay: 60
+      timeout: 320
+    loop: "{{ ec2.instances }}"
+
+- name: Configure instance(s)
+  hosts: launched
+  become: yes
+  gather_facts: True
+  vars:
+    create_containers: 1
+    default_container_name: bor
+    default_container_image: 0xpolygon/bor:0.3.0-beta3
+  tasks:
+    - name: Install aptitude
+      apt:
+        name: aptitude
+        state: latest
+        update_cache: true
+    - name: Install required system packages
+      apt:
+        pkg:
+          - apt-transport-https
+          - ca-certificates
+          - curl
+          - software-properties-common
+          - python3-pip
+          - virtualenv
+          - python3-setuptools
+          - awscli
+        state: latest
+        update_cache: true
+    - name: Add Docker GPG apt Key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+    - name: Add Docker Repository
+      apt_repository:
+        repo: deb https://download.docker.com/linux/ubuntu focal stable
+        state: present
+    - name: Update apt and install docker-ce
+      apt:
+        name: docker-ce
+        state: latest
+        update_cache: true
+    - name: Install Docker Module for Python
+      pip:
+        name: docker
+    - name: Login ECR
+      shell: "{{ item }}"
+      environment:
+        AWS_ACCESS_KEY_ID: "{{ lookup('env','AWS_ACCESS_KEY_ID') }}"
+        AWS_SECRET_ACCESS_KEY: "{{ lookup('env','AWS_SECRET_ACCESS_KEY') }}"
+        AWS_REGION: us-east-2
+      with_items:
+       - $(aws ecr get-login --no-include-email --region us-east-2)
+    - name: Pull default docker image
+      docker_image:
+        name: "{{ default_container_image }}"
+        source: pull
+    - name: Create and run container
+      docker_container:
+        name: "{{ default_container_name }}{{ item }}"
+        image: "{{ default_container_image }}"
+        state: started
+        ports: "8080:80"
+        detach: yes
+        command: server
+      with_sequence: count={{ create_containers }}
+
+- name: teardown instances
+  hosts: localhost
+  tasks:
+    - name: init terraform and run plan
+      shell:
+        cmd: |
+          sleep 15m
+          cd /opt/tf_repo/aws/test-applications/us-east-2/ci_deployment_cluster
+          terraform init
+          terraform destroy -var 'instance_count={{ instance_count }}' -auto-approve
