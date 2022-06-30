@@ -26,6 +26,10 @@
         mkdir -p /opt/tf_repo
         echo $PATH
         cat /etc/os-release
+        sudo yum install -y yum-utils
+        sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
+        sudo yum -y install terraform
+        terraform -help
 
   # - name: Pass variables to role
   #   ansible.builtin.import_role:
