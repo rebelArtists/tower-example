@@ -62,7 +62,6 @@
         terraform init
         terraform plan -var 'instance_count={{ instance_count }}'
         terraform apply -var 'instance_count={{ instance_count }}' -auto-approve
-        sleep 3m
         echo $(terraform output ansible_inventory)
     register: new_nodes
 
@@ -81,6 +80,9 @@
     default_container_name: bor
     default_container_image: 0xpolygon/bor:0.3.0-beta3
   tasks:
+    - name: Wait for sudo
+      become: yes
+      shell:  while sudo fuser /var/lib/dpkg/lock >/dev/null 2>&1; do sleep 5; done;
     - name: Install aptitude
       apt:
         name: aptitude
