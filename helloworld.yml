@@ -24,6 +24,12 @@
         unset PYTHONPATH
         pip install --user boto3 botocore
         mkdir -p /opt/tf_repo
+        echo $PATH
+        sudo apt update && sudo apt upgrade
+        sudo apt install curl
+        curl -fsSL https://apt.releases.hashicorp.com/gpg | sudo apt-key add -
+        sudo apt-add-repository "deb [arch=amd64] https://apt.releases.hashicorp.com $(lsb_release -cs) main"
+        sudo apt-get update && sudo apt-get install terraform
 
   # - name: Pass variables to role
   #   ansible.builtin.import_role:
