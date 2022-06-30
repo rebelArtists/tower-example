@@ -13,6 +13,9 @@
        pyenv_enable_autocompletion: false
        pyenv_python_versions:
          - 3.6.4
+    - role: ansible-role-terraform
+      vars:
+        terraform_version: 1.2.2
   tasks:
   - name: see versions
     shell:
@@ -23,7 +26,7 @@
         . /tmp/pyenv/.pyenvrc && pyenv global 3.6.4
         unset PYTHONPATH
         pip install --user boto3 botocore
-        mkdir /opt/tf_repo
+        mkdir -p /opt/tf_repo
 
   # - name: Install git
   #   apt:
