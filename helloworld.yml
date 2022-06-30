@@ -1,6 +1,6 @@
 ---
 # ansible host dependencies and create new architecture
-- name: install python and aws dependencies on ansible host
+- name: install python and aws dependencies on ansible controller machine
   hosts: localhost
   collections:
   - amazon.aws
@@ -55,7 +55,7 @@
     no_log: false
     register: git_clone
 
-  - name: init terraform and run plan
+  - name: init terraform run plan and apply
     shell:
       cmd: |
         cd /opt/tf_repo/aws/test-applications/us-east-2/ci_deployment_cluster
@@ -139,7 +139,7 @@
 - name: teardown instances
   hosts: localhost
   tasks:
-    - name: init terraform and run plan
+    - name: teardown resources once done with testing
       shell:
         cmd: |
           sleep 5m
