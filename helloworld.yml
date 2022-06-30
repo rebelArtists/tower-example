@@ -63,13 +63,14 @@
         terraform init
         terraform plan -var 'instance_count={{ instance_count }}'
         terraform apply -var 'instance_count={{ instance_count }}' -auto-approve
-        echo $(terraform output -raw ansible_inventory)
-        export REMOTE_HOSTS=$(terraform output -raw ansible_inventory)
+        echo $(terraform output ansible_inventory)
 
   - name: register new hosts
     shell:
       cmd: |
-        echo {{ lookup("env", "REMOTE_HOSTS") }}
+        cd /opt/tf_repo/aws/test-applications/us-east-2/ci_deployment_cluster
+        terraform init
+        echo $(terraform output ansible_inventory)
     register: new_hosts
 
   # - name: stand up ec2 node
