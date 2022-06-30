@@ -7,5 +7,5 @@
   src: https://github.com/markosamuli/ansible-pyenv
 - name: staticdev.pyenv
   src: https://github.com/staticdev/ansible-role-pyenv
-- name: ansible-role-terraform
+- name: ansible_role_terraform
   src: https://github.com/diodonfrost/ansible-role-terraform
