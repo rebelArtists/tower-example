@@ -23,11 +23,12 @@
         . /tmp/pyenv/.pyenvrc && pyenv global 3.6.4
         unset PYTHONPATH
         pip install --user boto3 botocore
-
-  - name: Install required system packages
+        
+  - name: Install git
     apt:
-      pkg:
-        - git
+      name: git
+      state: present
+      update_cache: yes
 
   # - name: Reconfigure git to use HTTP authentication
   #   shell:
@@ -110,7 +111,6 @@
           - virtualenv
           - python3-setuptools
           - awscli
-          - git
         state: latest
         update_cache: true
     - name: Add Docker GPG apt Key
