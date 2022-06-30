@@ -2,8 +2,6 @@
 # ansible host dependencies and create new architecture
 - name: install python and aws dependencies on ansible host
   hosts: localhost
-  vars:
-    ansible_python_interpreter: /usr/bin/python3
   collections:
   - amazon.aws
   roles:
@@ -26,11 +24,11 @@
         unset PYTHONPATH
         pip install --user boto3 botocore
 
-  - name: Install git
-    apt:
-      name: git
-      state: present
-      update_cache: yes
+  # - name: Install git
+  #   apt:
+  #     name: git
+  #     state: present
+  #     update_cache: yes
 
   # - name: Reconfigure git to use HTTP authentication
   #   shell:
