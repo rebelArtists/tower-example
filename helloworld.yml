@@ -73,7 +73,7 @@
         terraform plan -var 'instance_count={{ instance_count }}'
         terraform apply -var 'instance_count={{ instance_count }}' -auto-approve
         echo $(terraform output -raw ansible_inventory)
-        sleep 10m
+        sleep 3m
         terraform destroy -auto-approve
 
   # - name: stand up ec2 node
