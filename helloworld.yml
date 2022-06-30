@@ -58,6 +58,7 @@
   - name: init terraform and run plan
     shell:
       cmd: |
+        terraform login
         terraform -chdir="/opt/tf_repo/aws/test-applications/us-east-2/ci_deployment_cluster" init
         terraform -chdir="/opt/tf_repo/aws/test-applications/us-east-2/ci_deployment_cluster" plan -var 'instance_count=3'
 
