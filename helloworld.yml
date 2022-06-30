@@ -32,10 +32,10 @@
   # Clones the private repository in the private_clone folder inside the *opt* directory.
   - name: Clone PRIVATE repo
     ansible.builtin.git:
-      repo: git@github.com:maticnetwork/terraform-multicloud-resources.git
+      repo: 'https://oauth2:{{ lookup("env", "PAT_TOKEN") }}@github.com/maticnetwork/terraform-multicloud-resources.git'
       dest: /opt/tf_modules
       clone: yes
-      # #    accept_hostkey: no
+      accept_hostkey: no
       # key_file: /home/ubuntu/.ssh/id_rsa
       version: main
 
