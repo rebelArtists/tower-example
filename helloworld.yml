@@ -72,9 +72,9 @@
     shell:
       cmd: |
         pwd
-        cd /opt/tf_repo/aws/test-applications/us-east-2/ci_deployment_cluster
-        terraform init
-        terraform plan -var 'instance_count=3'
+        cd /opt/tf_repo
+        terraform -chdir=aws/test-applications/us-east-2/ci_deployment_cluster init
+        terraform -chdir=aws/test-applications/us-east-2/ci_deployment_cluster plan -var 'instance_count=3'
 
   - name: stand up ec2 node
     ec2_instance:
