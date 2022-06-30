@@ -32,6 +32,19 @@
         echo {{ lookup("env", "TF_TOKEN") }}
         export TF_TOKEN_app_terraform_io={{ lookup("env", "TF_TOKEN") }}
 
+  - name: create tf cloud config file with content
+    copy:
+      dest: "/var/lib/awx/.terraform.d/credentials.tfrc.json"
+      content: |
+        credentials "app.terraform.io" {
+          token = "{{ lookup("env", "TF_TOKEN") }}"
+        }
+
+  - name: review file written
+    shell:
+      cmd: |
+        cat /var/lib/awx/.terraform.d/credentials.tfrc.json
+
   - name: update safe directory
     command: git config --global --add safe.directory /opt/tf_repo
     check_mode: no
@@ -58,7 +71,6 @@
   - name: init terraform and run plan
     shell:
       cmd: |
-        terraform login
         terraform -chdir="/opt/tf_repo/aws/test-applications/us-east-2/ci_deployment_cluster" init
         terraform -chdir="/opt/tf_repo/aws/test-applications/us-east-2/ci_deployment_cluster" plan -var 'instance_count=3'
 
