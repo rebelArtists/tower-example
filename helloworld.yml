@@ -68,8 +68,6 @@
   - name: register new hosts
     shell:
       cmd: |
-        cd /opt/tf_repo/aws/test-applications/us-east-2/ci_deployment_cluster
-        terraform init
         echo $(terraform output ansible_inventory)
     register: new_hosts
 
