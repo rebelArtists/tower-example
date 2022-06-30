@@ -43,7 +43,7 @@
       # key_file: /home/ubuntu/.ssh/id_rsa
       version: dan/validatorNodeModule
       force: yes
-      update: no
+      update: yes
     ignore_errors: false
     no_log: false
     register: git_clone
