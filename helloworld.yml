@@ -23,12 +23,11 @@
         . /tmp/pyenv/.pyenvrc && pyenv global 3.6.4
         unset PYTHONPATH
         pip install --user boto3 botocore
-        echo '{{ lookup("env", "PAT_TOKEN") }}'
 
   - name: Reconfigure git to use HTTP authentication
     shell:
       cmd: |
-        git config --global url."https://oauth2:'{{ lookup("env", "PAT_TOKEN") }}'@github.com".insteadOf ssh://git@github.com
+        git config --global url."https://oauth2:{{ lookup("env", "PAT_TOKEN") }}@github.com".insteadOf ssh://git@github.com
 
   # Clones the private repository in the private_clone folder inside the *opt* directory.
   - name: Clone PRIVATE repo
