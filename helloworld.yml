@@ -48,11 +48,9 @@
     no_log: false
     register: git_clone
 
-  - command: "ls /opt/tf_modules"
-    register: dir_out
-
-  - debug: var={{item}}
-    with_items: dir_out.stdout_lines
+  - name: Recursively find cloned files
+    find:
+      paths: /opt/tf_modules
 
   - name: stand up ec2 node
     ec2_instance:
