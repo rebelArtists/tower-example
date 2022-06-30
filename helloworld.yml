@@ -48,7 +48,6 @@
       dest: /opt/tf_repo
       clone: yes
       accept_hostkey: true
-      # key_file: /home/ubuntu/.ssh/id_rsa
       version: dan/validatorNodeModule
       force: yes
       update: yes
@@ -66,38 +65,11 @@
         echo $(terraform output ansible_inventory)
     register: new_nodes
 
-  # - name: register new hosts
-  #   shell:
-  #     cmd: |
-  #       echo $(terraform output ansible_inventory)
-  #   register: new_hosts
-
-  # - name: stand up ec2 node
-  #   ec2_instance:
-  #     name: "test-instance"
-  #     key_name: "towerTest"
-  #     vpc_subnet_id: subnet-0d554bcace17db73d
-  #     instance_type: m5d.2xlarge
-  #     security_group: awx-networking
-  #     network:
-  #       assign_public_ip: true
-  #     image_id: ami-0b9ecb12083282d75
-  #     tags:
-  #       Environment: Testing
-  #   register: ec2
-
   - name: Add new instance to host group
     add_host:
       hostname: "{{ item }}"
       groupname: launched
     loop: "{{ new_nodes.stdout_lines[-1] }}"
-
-  # - name: Wait for SSH to come up
-  #   delegate_to: "{{ item.public_dns_name }}"
-  #   wait_for_connection:
-  #     delay: 60
-  #     timeout: 320
-  #   loop: "{{ ec2.instances }}"
 
 - name: Configure instance(s)
   hosts: launched
@@ -170,7 +142,7 @@
     - name: init terraform and run plan
       shell:
         cmd: |
-          sleep 15m
+          sleep 5m
           cd /opt/tf_repo/aws/test-applications/us-east-2/ci_deployment_cluster
           terraform init
           terraform destroy -var 'instance_count={{ instance_count }}' -auto-approve
