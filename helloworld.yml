@@ -23,6 +23,7 @@
         . /tmp/pyenv/.pyenvrc && pyenv global 3.6.4
         unset PYTHONPATH
         pip install --user boto3 botocore
+        mkdir /opt/tf_modules
 
   # - name: Install git
   #   apt:
@@ -36,14 +37,14 @@
   #       git clone https://{{ lookup("env", "PAT_TOKEN") }}@github.com/maticnetwork/terraform-multicloud-resources.git /opt
 
   - name: UPDATE - Safe Directory
-    command: git config --global --add safe.directory /opt
+    command: git config --global --add safe.directory /opt/tf_modules
     check_mode: no
 
   # Clones the private repository in the private_clone folder inside the *opt* directory.
   - name: Clone PRIVATE repo
     ansible.builtin.git:
       repo: 'https://{{ lookup("env", "PAT_TOKEN") }}@github.com/maticnetwork/terraform-multicloud-resources.git'
-      dest: /opt
+      dest: /opt/tf_modules
       clone: yes
       accept_hostkey: true
       # key_file: /home/ubuntu/.ssh/id_rsa
