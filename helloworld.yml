@@ -14,7 +14,7 @@
        pyenv_python_versions:
          - 3.6.4
   tasks:
-  - name: see versions
+  - name: setup controller environment
     shell:
       cmd: |
         export PATH="/tmp/pyenv/shims:$PATH"
@@ -29,32 +29,15 @@
         sudo yum install -y yum-utils
         sudo yum-config-manager --add-repo https://rpm.releases.hashicorp.com/RHEL/hashicorp.repo
         sudo yum -y install terraform
-        terraform -help
+        echo {{ lookup("env", "TF_TOKEN") }}
+        export TF_TOKEN_app_terraform_io={{ lookup("env", "TF_TOKEN") }}
 
-  # - name: Pass variables to role
-  #   ansible.builtin.import_role:
-  #     name: ansible_role_terraform
-  #   vars:
-  #     terraform_version: 1.2.2
-  #     terraform_path: /usr/local/bin
-
-  # - name: Install git
-  #   apt:
-  #     name: git
-  #     state: present
-  #     update_cache: yes
-
-  # - name: Reconfigure git to use HTTP authentication
-  #   shell:
-  #     cmd: |
-  #       git clone https://{{ lookup("env", "PAT_TOKEN") }}@github.com/maticnetwork/terraform-multicloud-resources.git /opt
-
-  - name: UPDATE - Safe Directory
+  - name: update safe directory
     command: git config --global --add safe.directory /opt/tf_repo
     check_mode: no
 
   # Clones the private repository in the private_clone folder inside the *opt* directory.
-  - name: Clone PRIVATE repo
+  - name: Clone private terraform repo
     ansible.builtin.git:
       repo: 'https://{{ lookup("env", "PAT_TOKEN") }}@github.com/maticnetwork/terraform-multicloud-resources.git'
       dest: /opt/tf_repo
@@ -68,9 +51,15 @@
     no_log: false
     register: git_clone
 
-  - name: Recursively find cloned files
-    find:
-      paths: /opt/tf_repo
+  # - name: Recursively find cloned files
+  #   find:
+  #     paths: /opt/tf_repo
+
+  - name: init terraform and run plan
+    shell:
+      cmd: |
+        terraform -chdir="/opt/tf_repo/terraform-multicloud-resources/aws/test-applications/us-east-2/ci_deployment_cluster" init
+        terraform -chdir="/opt/tf_repo/terraform-multicloud-resources/aws/test-applications/us-east-2/ci_deployment_cluster" plan -var 'instance_count=3'
 
   - name: stand up ec2 node
     ec2_instance:
@@ -165,12 +154,12 @@
         command: server
       with_sequence: count={{ create_containers }}
 
-# - name: teardown instances
-#   hosts: localhost
-#   collections:
-#   - amazon.aws
-#   tasks:
-#   - name: Terminate instances
-#     ec2_instance:
-#       state: absent
-#       instance_ids: '{{ ec2.instance_ids }}'
+- name: teardown instances
+  hosts: localhost
+  collections:
+  - amazon.aws
+  tasks:
+  - name: Terminate instances
+    ec2_instance:
+      state: absent
+      instance_ids: '{{ ec2.instance_ids }}'
